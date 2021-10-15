@@ -1,7 +1,9 @@
-// GLOBALS - NO WINDOW !!!
-// These are global variables in node
-// __dirname -- path to current directory
-// __filename -- file name
-// require -- function to use modules(CommonJs)
-// module -- info about current module (file)
-// process -- info about env where program is being executed
+// Modules - Encapsulated code (only share mininum)
+// CommonJS - every file is module (by default)
+const {john, peter} = require('./2-names');
+const sayHi = require('./3-utils');
+require('./4-function');
+
+sayHi('Pradeep');
+sayHi(john);
+sayHi(peter);
