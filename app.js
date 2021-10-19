@@ -1,17 +1,8 @@
-const {readFile} = require('fs');
+// Streams
 
-const getText = (path) => {
-    return new Promise((resolve, reject) => {
-        readFile(path, 'utf8', (err, data) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(data);
-            }
-        })
-    })
-}
+// Readable
+// Writable
+// Duplex( for both read/write)
+// Transform
 
-getText('./content/first.txt')
-.then(result => console.log(result))
-.catch(err => console.log(err));
+// Whenever required to handle streaming data,ex - continuous source or big file, it becomes very handy.
