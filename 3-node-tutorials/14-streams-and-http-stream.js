@@ -15,7 +15,7 @@ const stream = createReadStream('./content/big-file.txt', {
 });
 // const stream = createReadStream('./content/big-file.txt', { encoding: 'utf8'});
 
-// default 64kb
+// default size of buffer is 64kb
 // last buffer - remainder
 // highWaterMark - control size
 stream.on('data', (result) => {
@@ -25,3 +25,22 @@ stream.on('data', (result) => {
 stream.on('error', (err) => {
     console.log(err);
 })
+
+/** HTTP STREAM */
+
+const http = require('http');
+const fs = require('fs');
+
+http.createServer((req, res) => {
+    // const text = fs.readFileSync('./content/big-file.txt', 'utf-8');
+    // res.end(text);
+    const fileStream = fs.createReadStream('./content/big-file.txt', 'utf8');
+    
+    fileStream.on('open', () => {
+        fileStream.pipe(res);
+    })
+
+    fileStream.on('error', (err) => {
+        res.end(err);
+    })
+}).listen(3000); 
