@@ -1,51 +1,33 @@
-const http = require('http');
-const {readFileSync} = require('fs');
+const express = require('express');
+const path = require('path');
+const app = express();
 
-// get all files 
-const homePage = readFileSync('./navbar-app/index.html');
-const homeStyles = readFileSync('./navbar-app/styles.css');
-const homeLogo = readFileSync('./navbar-app/logo.svg');
-const homeLogic = readFileSync('./navbar-app/browser-app.js');
+//setup static and middleware
+app.use(express.static('./public'));
 
-const server = http.createServer((req, res) => {
-    console.log('user hit the server');
-    console.log(req.method);
-    console.log(req.url);
-    const url = req.url;
-    //home page
-    if (url === "/") {
-        res.writeHead(200, {'content-type': 'text/html'}); // passing text/plain renders as plain text
-        res.write(homePage);
-        res.end();
-    } 
-    // about page
-    else if (url === "/about") {
-        res.writeHead(200, {'content-type':'text/html'});
-        res.write('<h1>About page</h1>');
-        res.end();
-    }
-    // styles file
-    else if (url === "/styles.css") {
-        res.writeHead(200, {'content-type':'text/css'});
-        res.write(homeStyles);
-        res.end();
-    } 
-    else if (url === "/logo.svg") {
-        res.writeHead(200, {'content-type':'image/svg+xml'});
-        res.write(homeLogo);
-        res.end();
-    }
-    else if (url === "/browser-app.js") {
-        res.writeHead(200, {'content-type':'text/javascript'});
-        res.write(homeLogic);
-        res.end();
-    } 
-    // 404  
-    else {
-        res.writeHead(404, {'content-type': 'text/html'});
-        res.write('<h1>404 page not found</h1>');
-        res.end();
-    }
-});
+// app.get('/', (req, res) => {
+//     // res.status(200).send('home page');
+//     res.sendFile(path.resolve(__dirname, './navbar-app/index.html'));
+//  adding to static assets
+//  SSR 
+// })
 
-server.listen(3000);
+app.get('/about', (req, res) => {
+    res.status(200).send('About page');
+})
+
+app.all('*', (req, res) => {
+    res.status(404).end('<h1>resource not found!</h1>');
+})
+
+app.listen(3000, () => {
+    console.log(`server is listening on port 3000`);
+})
+
+// app.get
+// app.post
+// app.put
+// app.delete
+// app.all
+// app.use
+// app.listen
