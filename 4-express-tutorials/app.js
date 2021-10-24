@@ -1,33 +1,56 @@
 const express = require('express');
-const path = require('path');
 const app = express();
+const {products} = require('./data');
 
-//setup static and middleware
-app.use(express.static('./public'));
-
-// app.get('/', (req, res) => {
-//     // res.status(200).send('home page');
-//     res.sendFile(path.resolve(__dirname, './navbar-app/index.html'));
-//  adding to static assets
-//  SSR 
-// })
-
-app.get('/about', (req, res) => {
-    res.status(200).send('About page');
+app.get('/', (req, res) => {
+    res.send('<h1>Home Page</h1><a href="/api/products">products</a>');
 })
 
-app.all('*', (req, res) => {
-    res.status(404).end('<h1>resource not found!</h1>');
+app.get('/api/products', (req, res) => {
+    const newProducts = products.map((product) => {
+
+        const {id, name, image, price, desc} = product;
+        return {id, name, image};
+    })
+    res.send(newProducts);
+})
+
+app.get('/api/products/:productId', (req, res) => {
+    console.log(req);
+    console.log(req.params);
+    const { productId } = req.params;
+    const singleProduct = products.find(product => product.id === Number(productId));
+    
+    if (!singleProduct) {
+        res.status(404).send('<h2>Product doesn\'t exist</h2>');
+    }
+    
+    res.json( singleProduct);
+})
+
+app.get('/api/products/:productId/reviews/:reviewId', (req, res) => {
+    res.send('hello world');
+    console.log(req.params); // { productId: '5', reviewId: 'abc' }
+})
+
+app.get('/api/v1/query', (req, res) => {
+    // console.log(req.query); //{ name: 'john', age: '26' }
+    const {search, limit} = req.query;
+    let sortedProducts = [...products];
+    
+    if (search) {
+        sortedProducts = sortedProducts.filter(product => {
+            return product.name.startsWith(search);
+        })
+    }
+    if (limit) {
+        sortedProducts = sortedProducts.slice(0, Number(limit));
+    }
+
+    res.status(200).json(sortedProducts);
+    res.send('hello world');
 })
 
 app.listen(3000, () => {
-    console.log(`server is listening on port 3000`);
+    console.log('server is listening on port 3000');
 })
-
-// app.get
-// app.post
-// app.put
-// app.delete
-// app.all
-// app.use
-// app.listen
