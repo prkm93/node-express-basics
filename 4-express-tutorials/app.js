@@ -39,11 +39,46 @@ app.post('/api/postman/people', (req, res) => {
 
     if (!name) {
         return res
-               .status(400)
+               .status(404)
                .json({succes: false, msg: "please provide name value"})
     }
 
     res.status(201).send({ success: true, data: [...people, name]})
+})
+
+app.put('/api/people/:id', (req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
+    console.log(id, name);
+
+    const person = people.find(person => person.id === Number(id));
+    if (!person) {
+        return res
+               .status(404)
+               .json({succes: false, msg: `no person with id ${id}`})
+    }
+
+    const newPeople = people.map(person => {
+        if (person.id === Number(id)) {
+            person.name = name;
+        }
+        return person;
+    })
+
+    res.status(200).json({success: true, data: newPeople});
+}) 
+
+app.delete('/api/people/:id', (req, res) => {
+    const person = people.find(person => person.id === Number(req.params.id));
+    console.log(person);
+    if (!person) {
+        return res
+               .status(404)
+               .json({success: false, msg: `no person with id ${req.params.id}`});
+    }
+    const newPeople = people.filter(person => person.id !== Number(req.params.id))
+    console.log(newPeople);
+    res.status(200).json({sucess: true, data: newPeople});
 })
 
 app.listen(3000, () => {
