@@ -1,7 +1,9 @@
+
 const express = require('express');
 const app = express();
-
 const tasks = require('./routes/tasks');
+const connectDB = require('./db/connect');
+require('dotenv').config();
 
 // middleware
 app.use(express.json()); //if we dont use this,there willn't be any data in req.body(for capturing data from req.body)
@@ -21,6 +23,20 @@ const port = 3000;
 // app.patch('/api/v1/tasks/:id')    - update task
 // app.delete('/api/v1/tasks/:id')   - delete task
 
-app.listen(port, () => {
-    console.log(`Server is listening on port ${port}`)
-})
+const start = async() => {
+   try {
+       // if DB connection successful, then only spin up the server
+       await connectDB(process.env.MONGO_URI)
+       .then(() => console.log('connected to mongo DB'))
+       .catch(error => console.log(error));
+       
+       app.listen(port, () => {
+        console.log(`Server is listening on port ${port}`)
+       })
+   } catch (error) {
+       console.log(error);
+   }
+}
+
+start();
+
