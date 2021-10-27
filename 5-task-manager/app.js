@@ -5,13 +5,11 @@ const tasks = require('./routes/tasks');
 const connectDB = require('./db/connect');
 require('dotenv').config();
 
-// middleware
-app.use(express.json()); //if we dont use this,there willn't be any data in req.body(for capturing data from req.body)
+
 app.use(express.static('./public'));
 
-app.get('/hello', (req, res) => {
-    res.send('Task Manager App');
-})
+// middleware
+app.use(express.json()); //if we dont use this,there willn't be any data in req.body(for capturing data from req.body)
 
 app.use('/api/v1/tasks', tasks);
 
@@ -29,7 +27,7 @@ const start = async() => {
        await connectDB(process.env.MONGO_URI)
        .then(() => console.log('connected to mongo DB'))
        .catch(error => console.log(error));
-       
+
        app.listen(port, () => {
         console.log(`Server is listening on port ${port}`)
        })
