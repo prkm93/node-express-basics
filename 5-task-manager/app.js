@@ -4,7 +4,8 @@ const app = express();
 const tasks = require('./routes/tasks');
 const connectDB = require('./db/connect');
 require('dotenv').config();
-
+const notFound = require('./middleware/not-found');
+const errorHandlerMiddleware = require('./middleware/error-handler');
 
 app.use(express.static('./public'));
 
@@ -13,6 +14,9 @@ app.use(express.json()); //if we dont use this,there willn't be any data in req.
 
 app.use('/api/v1/tasks', tasks);
 
+//middleware (when no route matches)
+app.use(notFound);
+app.use(errorHandlerMiddleware);
 const port = 3000;
 
 // app.get('/api/v1/tasks')          - get all the tasks
